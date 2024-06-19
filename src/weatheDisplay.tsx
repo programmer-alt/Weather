@@ -3,7 +3,7 @@ import axios from "axios";
 
 interface WeatherData {
   temperature: number,
-  windSpeed?: number
+  windSpeed: number
 }
 
 const WeatherDisplay: React.FC = () => {
@@ -12,33 +12,36 @@ const WeatherDisplay: React.FC = () => {
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
-        const res = await axios.get<any>(`https://api.openweathermap.org/data/2.5/weather?q=London&appid=503b5760f08bc1afaf91246a950c28f8&units=metric`)
-        if (res.status === 200) {
-         console.log(' Запрос код 200', res.data )
+        const response = await axios.get<any>(`https://api.openweathermap.org/data/2.5/weather?q=London&appid=503b5760f08bc1afaf91246a950c28f8&units=metric`)
+        if (response.status === 200) {
+          console.log(' Запрос кода 200', response.data)
         } else {
-          console.log('Другой код запроса')
+          console.log('Запрос кода не 200')
         }
         setWeatherData({
-          temperature: res.data.main.temp,
-          windSpeed: res.data.wind.speed
-        });
+          temperature: response.data.main.temp,
+          windSpeed: response.data.wind.speed
+        })
       } catch (error) {
-        console.log('Ошибка запроса', error)
+        console.log(' Ошибка запроса', error)
       }
     }
     fetchWeatherData()
   }, [])
 
-  return (
-    <div>
-      {weatherData? (
-        <>
-          <p>Температура в Лондоне: {weatherData.temperature} Градусов цельсия</p>
-          <p>Скорость ветра в Лондоне : {weatherData.windSpeed?.toFixed(2)}m/s</p>
-        </>
-      ) : (<p>Загрузка погоды....</p>)}
-    </div>
-  )
+return (
+   <div>
+    {weatherData ? (
+      <>
+        <h1>Температура: {weatherData.temperature}°C</h1>
+        <h2>Скорость ветра: {weatherData.windSpeed} м/с</h2>
+      </>
+    ) : (
+      <p>Загрузка...</p>
+    )}
+   </div>
+)
+
 }
 
 export default WeatherDisplay
